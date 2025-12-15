@@ -5,8 +5,15 @@
 const int ledPin = LED_BUILTIN;
 int sensorValue = 1;
 
-const char* ssid = "OPPO F5";
-const char* password = "trikora18";
+// const char* ssid = "OPPO F5";
+// const char* password = "trikora18";
+
+const char* ssid = "NodeMCU_AP";
+const char* password = "12345678";
+
+IPAddress localIP(192,168,1,17);
+IPAddress gateway(192,168,1,17);
+IPAddress subnet(255,255,255,0);
 
 ESP8266WebServer server(80);
 
@@ -35,11 +42,28 @@ void handleRoot() {
         <p class="lead">Ini tampilan web dengan Bootstrap</p>
         <h1 class="display-4">Kontrol LED</h1>
         <p class="lead">Tekan tombol untuk mengontrol LED built-in</p>
-        <a href="/on" class="btn btn-success m-2">LED ON</a>
-        <a href="/off" class="btn btn-danger m-3">LED OFF</a>
+        <a href="" class="btn btn-success m-2 on">LED ON</a>
+        <a href="" class="btn btn-danger m-3 off">LED OFF</a>
         <h1 class="display-4">Kontrol LED & Baca Sensor</h1>
         <p class="lead">Sensor Value: <span id="sensor">Loading...</span></p>
       </div>
+      <script>
+        const btn = document.querySelectorAll('a');
+        btn.forEach(item=>{
+          item.addEventListener('click', e=>{
+          e.preventDefault();
+          console.log('preventDefault berhasil');
+          const myfunc = async function(){
+            if(e.target.classList.contains('on')){
+              await fetch('/on');
+            }elseif(e.target.classList.contains('off')){
+              await fetch('/off');
+            }
+          };
+          myfunc();
+        });
+        })
+      </script>
     </body>
     </html>
   )rawliteral");
@@ -64,12 +88,16 @@ void handleSensor() {
 
 void setup() {
   Serial.begin(115200);
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-  Serial.println(WiFi.localIP());
+  // WiFi.begin(ssid, password);
+  WiFi.mode(WIFI_AP);
+  WiFi.softAP(ssid,password);
+  WiFi.softAPConfig(localIP, gateway, subnet);
+  Serial.println(WiFi.softAPIP());
+  // while (WiFi.status() != WL_CONNECTED) {
+  //   delay(500);
+  //   Serial.print(".");
+  // }
+  // Serial.println(WiFi.localIP());
 
   pinMode(ledPin, OUTPUT);
   digitalWrite(ledPin, HIGH); // Matikan LED saat awal
