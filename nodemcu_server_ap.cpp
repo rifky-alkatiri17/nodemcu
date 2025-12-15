@@ -2,6 +2,12 @@
 //http://192.168.4.1/page2  → page kedua
 //http://192.168.4.1/status → data JSON
 
+/*IPAddress ip(192,168,1,17);
+IPAddress gateway(192,168,1,17);
+IPAddress subnet(255,255,255,0);
+
+WiFi.softAPConfig(ip, gateway, subnet);*/
+
 
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
