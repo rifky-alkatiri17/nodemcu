@@ -1,0 +1,13 @@
+body {
+  text-align: center;
+  font-family: Arial;
+}
+a {
+  padding: 10px 20px;
+  background: green;
+  color: white;
+  text-decoration: none;
+}
+.off {
+  background: red;
+}
